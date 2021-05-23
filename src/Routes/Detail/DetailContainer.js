@@ -14,8 +14,14 @@ export default class extends React.Component {
             error: null,
             loading: true,
             isMovie: pathname.includes("/movie/"),
+            activeTab: 0,
+            tabHandler: this.tabHandler,
         };
     }
+
+    tabHandler = (id) => {
+        this.setState({ activeTab: id });
+    };
 
     async componentDidMount() {
         const {
@@ -43,7 +49,17 @@ export default class extends React.Component {
         }
     }
     render() {
-        const { result, error, loading } = this.state;
-        return <DetailPresenter result={result} error={error} loading={loading} />;
+        const { result, error, loading, activeTab, tabHandler, isMovie } = this.state;
+
+        return (
+            <DetailPresenter
+                result={result}
+                error={error}
+                loading={loading}
+                activeTab={activeTab}
+                tabHandler={tabHandler}
+                isMovie={isMovie}
+            />
+        );
     }
 }

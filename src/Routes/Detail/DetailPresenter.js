@@ -2,8 +2,8 @@ import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import Loader from "../../Components/Loader";
-import noPoster from "../../assets/noPosterSmall.png";
 import Helmet from "react-helmet";
+import MainNav from "../../Components/MainNav";
 
 const Container = styled.div`
     height: calc(100vh - 50px);
@@ -50,13 +50,22 @@ const Data = styled.div`
 
 const Title = styled.h3`
     font-size: 32px;
+    margin-left: 20px;
 `;
 
 const ItemContainer = styled.div`
     margin: 20px 0;
+    margin-left: 20px;
+    display: flex;
+    align-items: center;
 `;
 
 const Item = styled.span``;
+
+const Imdb = styled.img`
+    height: 100%;
+    width: 30px;
+`;
 
 const Divider = styled.span`
     margin: 0 10px;
@@ -66,10 +75,17 @@ const Overview = styled.p`
     font-size: 12px;
     opacity: 0.7;
     line-height: 1.5;
-    width: 50%;
+    width: 100%;
+    height: 100px;
+    margin-left: 20px;
+    overflow: scroll;
+
+    &::-webkit-scrollbar {
+        display: none;
+    }
 `;
 
-const DetailPresenter = ({ result, loading, error }) =>
+const DetailPresenter = ({ result, loading, error, activeTab, tabHandler, isMovie }) =>
     loading ? (
         <>
             <Helmet>
@@ -86,6 +102,7 @@ const DetailPresenter = ({ result, loading, error }) =>
             </Helmet>
             <Backdrop bgImage={`https://image.tmdb.org/t/p/original${result.backdrop_path}`} />
             <Content>
+                {console.log(result)}
                 <Cover
                     bgImage={
                         result.poster_path
@@ -116,8 +133,25 @@ const DetailPresenter = ({ result, loading, error }) =>
                                         : `${genre.name} / `
                                 )}
                         </Item>
+                        <Divider>{result.imdb_id && "•"}</Divider>
+                        <Item>
+                            {result.imdb_id && (
+                                <a href={`https://www.imdb.com/title/${result.imdb_id}`}>
+                                    <Imdb
+                                        src="https://m.media-amazon.com/images/G/01/IMDb/BG_rectangle._CB1509060989_SY230_SX307_AL_.png"
+                                        alt=""
+                                    ></Imdb>
+                                </a>
+                            )}
+                        </Item>
                     </ItemContainer>
                     <Overview>{result.overview}</Overview>
+                    <MainNav
+                        tabHandler={tabHandler}
+                        activeTab={activeTab}
+                        isMovie={isMovie}
+                        result={result}
+                    />
                 </Data>
             </Content>
         </Container>
@@ -127,6 +161,9 @@ DetailPresenter.propTypes = {
     result: PropTypes.object,
     loading: PropTypes.bool.isRequired,
     error: PropTypes.string,
+    activeTab: PropTypes.number,
+    tabHandler: PropTypes.func,
+    isMovie: PropTypes.bool,
 };
 
 export default DetailPresenter;
